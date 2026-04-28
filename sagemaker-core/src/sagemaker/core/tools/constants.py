@@ -108,6 +108,7 @@ INTELLIGENT_DEFAULTS_HELPER_CODEGEN_FILE_NAME = "intelligent_defaults_helper.py"
 RESOURCES_CODEGEN_FILE_NAME = "resources.py"
 
 SHAPES_CODEGEN_FILE_NAME = "shapes.py"
+SHAPES_CODEGEN_OUTPUT_DIR = os.getcwd() + "/src/sagemaker/core/shapes"
 
 CONFIG_SCHEMA_FILE_NAME = "config_schema.py"
 

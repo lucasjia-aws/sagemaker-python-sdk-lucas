@@ -22,6 +22,7 @@ from sagemaker.core.tools.constants import (
     LICENCES_STRING,
     GENERATED_CLASSES_LOCATION,
     SHAPES_CODEGEN_FILE_NAME,
+    SHAPES_CODEGEN_OUTPUT_DIR,
 )
 from sagemaker.core.tools.shapes_extractor import ShapesExtractor
 from sagemaker.core.utils.utils import (
@@ -252,7 +253,7 @@ class ShapesCodeGen:
 
     def generate_shapes(
         self,
-        output_folder=GENERATED_CLASSES_LOCATION,
+        output_folder=SHAPES_CODEGEN_OUTPUT_DIR,
         file_name=SHAPES_CODEGEN_FILE_NAME,
     ) -> None:
         """

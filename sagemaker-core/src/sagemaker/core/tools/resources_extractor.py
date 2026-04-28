@@ -67,16 +67,19 @@ class ResourcesExtractor:
         self,
         combined_shapes: Optional[dict] = None,
         combined_operations: Optional[dict] = None,
+        write_csv: bool = False,
     ):
         """
         Initializes a ResourceExtractor object.
 
         Args:
             service_json (dict): The service JSON containing operations and shapes.
+            write_csv (bool): Whether to write resource_plan.csv. Only True during codegen.
         """
         self.operations = combined_operations or load_combined_operations_data()
         self.shapes = combined_shapes or load_combined_shapes_data()
         self.additional_operations = load_additional_operations_data()
+        self.write_csv = write_csv
         # contains information about additional methods only now.
         # TODO: replace resource_actions with resource_methods to include all methods
         self.resource_methods = {}
@@ -340,7 +343,7 @@ class ResourcesExtractor:
 
             self.df = pd.concat([self.df, new_row], ignore_index=True)
 
-        self.df.to_csv("resource_plan.csv", index=False)
+        self.df.to_csv("resource_plan.csv", index=False) if self.write_csv else None
 
     def get_resource_plan(self):
         """

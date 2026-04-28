@@ -145,7 +145,7 @@ class ResourcesCodeGen:
         self.shapes = load_combined_shapes_data()
 
         # Initialize the resources and shapes extractors
-        self.resources_extractor = ResourcesExtractor()
+        self.resources_extractor = ResourcesExtractor(write_csv=True)
         self.shapes_extractor = ShapesExtractor()
 
         # Extract the resources plan and shapes DAG

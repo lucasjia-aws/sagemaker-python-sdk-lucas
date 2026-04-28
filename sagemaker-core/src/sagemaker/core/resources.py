@@ -174,8 +174,43 @@ class AIBenchmarkJob(Base):
                 return value
         logger.error("Name attribute not found for object ai_benchmark_job")
         return None
+
+    
+    def populate_inputs_decorator(create_func):
+        @functools.wraps(create_func)
+        def wrapper(*args, **kwargs):
+            config_schema_for_resource = \
+        {
+          "output_config": {
+            "s3_output_location": {
+              "type": "string"
+            }
+          },
+          "role_arn": {
+            "type": "string"
+          },
+          "network_config": {
+            "vpc_config": {
+              "security_group_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "subnets": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+            return create_func(*args, **Base.get_updated_kwargs_with_configured_attributes(config_schema_for_resource, "AIBenchmarkJob", **kwargs))
+        return wrapper
     
     @classmethod
+    @populate_inputs_decorator
     @Base.add_validate_call
     def create(
         cls,
@@ -584,8 +619,34 @@ class AIRecommendationJob(Base):
                 return value
         logger.error("Name attribute not found for object ai_recommendation_job")
         return None
+
+    
+    def populate_inputs_decorator(create_func):
+        @functools.wraps(create_func)
+        def wrapper(*args, **kwargs):
+            config_schema_for_resource = \
+        {
+          "model_source": {
+            "s3": {
+              "s3_uri": {
+                "type": "string"
+              }
+            }
+          },
+          "output_config": {
+            "s3_output_location": {
+              "type": "string"
+            }
+          },
+          "role_arn": {
+            "type": "string"
+          }
+        }
+            return create_func(*args, **Base.get_updated_kwargs_with_configured_attributes(config_schema_for_resource, "AIRecommendationJob", **kwargs))
+        return wrapper
     
     @classmethod
+    @populate_inputs_decorator
     @Base.add_validate_call
     def create(
         cls,
@@ -1661,9 +1722,6 @@ class Algorithm(Base):
                 "type": "string"
               },
               "s3_uri": {
-                "type": "string"
-              },
-              "manifest_s3_uri": {
                 "type": "string"
               }
             }
@@ -5931,11 +5989,6 @@ class CompilationJob(Base):
               "type": "string"
             }
           },
-          "resource_config": {
-            "volume_kms_key_id": {
-              "type": "string"
-            }
-          },
           "vpc_config": {
             "security_group_ids": {
               "type": "array",
@@ -8407,14 +8460,6 @@ class Domain(Base):
             "execution_role": {
               "type": "string"
             },
-            "environment_settings": {
-              "default_s3_artifact_path": {
-                "type": "string"
-              },
-              "default_s3_kms_key_id": {
-                "type": "string"
-              }
-            },
             "security_groups": {
               "type": "array",
               "items": {
@@ -8472,20 +8517,6 @@ class Domain(Base):
                   "items": {
                     "type": "string"
                   }
-                }
-              }
-            },
-            "emr_settings": {
-              "assumable_role_arns": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              },
-              "execution_role_arns": {
-                "type": "array",
-                "items": {
-                  "type": "string"
                 }
               }
             }
@@ -12445,12 +12476,6 @@ class FlowDefinition(Base):
           },
           "role_arn": {
             "type": "string"
-          },
-          "task_rendering_role_arn": {
-            "type": "string"
-          },
-          "kms_key_id": {
-            "type": "string"
           }
         }
             return create_func(*args, **Base.get_updated_kwargs_with_configured_attributes(config_schema_for_resource, "FlowDefinition", **kwargs))
@@ -14104,22 +14129,8 @@ class HumanTaskUi(Base):
                 return value
         logger.error("Name attribute not found for object human_task_ui")
         return None
-
-    
-    def populate_inputs_decorator(create_func):
-        @functools.wraps(create_func)
-        def wrapper(*args, **kwargs):
-            config_schema_for_resource = \
-        {
-          "kms_key_id": {
-            "type": "string"
-          }
-        }
-            return create_func(*args, **Base.get_updated_kwargs_with_configured_attributes(config_schema_for_resource, "HumanTaskUi", **kwargs))
-        return wrapper
     
     @classmethod
-    @populate_inputs_decorator
     @Base.add_validate_call
     def create(
         cls,
@@ -14544,9 +14555,6 @@ class HyperParameterTuningJob(Base):
               },
               "kms_key_id": {
                 "type": "string"
-              },
-              "remove_job_name_from_s3_output_path": {
-                "type": "boolean"
               }
             },
             "vpc_config": {
@@ -17203,21 +17211,6 @@ class InferenceRecommendationsJob(Base):
                 }
               }
             }
-          },
-          "output_config": {
-            "kms_key_id": {
-              "type": "string"
-            },
-            "compiled_output_config": {
-              "s3_output_uri": {
-                "type": "string"
-              }
-            },
-            "benchmark_results_output_config": {
-              "s3_output_uri": {
-                "type": "string"
-              }
-            }
           }
         }
             return create_func(*args, **Base.get_updated_kwargs_with_configured_attributes(config_schema_for_resource, "InferenceRecommendationsJob", **kwargs))
@@ -17763,9 +17756,6 @@ class LabelingJob(Base):
                 "type": "string"
               }
             }
-          },
-          "task_rendering_role_arn": {
-            "type": "string"
           },
           "label_category_config_s3_uri": {
             "type": "string"
@@ -18946,6 +18936,12 @@ class MlflowTrackingServer(Base):
         {
           "role_arn": {
             "type": "string"
+          },
+          "s3_bucket_owner_account_id": {
+            "type": "string"
+          },
+          "s3_bucket_owner_verification": {
+            "type": "boolean"
           }
         }
             return create_func(*args, **Base.get_updated_kwargs_with_configured_attributes(config_schema_for_resource, "MlflowTrackingServer", **kwargs))
@@ -21629,23 +21625,6 @@ class ModelPackage(Base):
               }
             }
           },
-          "deployment_specification": {
-            "test_input": {
-              "data_source": {
-                "s3_data_source": {
-                  "s3_data_type": {
-                    "type": "string"
-                  },
-                  "s3_uri": {
-                    "type": "string"
-                  },
-                  "s3_data_distribution_type": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          },
           "drift_check_baselines": {
             "bias": {
               "config_file": {
@@ -23616,324 +23595,6 @@ class MonitoringSchedule(Base):
                     "items": {
                       "type": "string"
                     }
-                  }
-                }
-              }
-            }
-          },
-          "custom_monitoring_job_definition": {
-            "custom_monitoring_job_input": {
-              "endpoint_input": {
-                "s3_input_mode": {
-                  "type": "string"
-                },
-                "s3_data_distribution_type": {
-                  "type": "string"
-                }
-              },
-              "batch_transform_input": {
-                "data_captured_destination_s3_uri": {
-                  "type": "string"
-                },
-                "s3_input_mode": {
-                  "type": "string"
-                },
-                "s3_data_distribution_type": {
-                  "type": "string"
-                }
-              },
-              "ground_truth_s3_input": {
-                "s3_uri": {
-                  "type": "string"
-                }
-              }
-            },
-            "custom_monitoring_job_output_config": {
-              "kms_key_id": {
-                "type": "string"
-              }
-            },
-            "job_resources": {
-              "cluster_config": {
-                "volume_kms_key_id": {
-                  "type": "string"
-                }
-              }
-            },
-            "role_arn": {
-              "type": "string"
-            },
-            "network_config": {
-              "vpc_config": {
-                "security_group_ids": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                },
-                "subnets": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          },
-          "data_quality_job_definition": {
-            "data_quality_job_input": {
-              "endpoint_input": {
-                "s3_input_mode": {
-                  "type": "string"
-                },
-                "s3_data_distribution_type": {
-                  "type": "string"
-                }
-              },
-              "batch_transform_input": {
-                "data_captured_destination_s3_uri": {
-                  "type": "string"
-                },
-                "s3_input_mode": {
-                  "type": "string"
-                },
-                "s3_data_distribution_type": {
-                  "type": "string"
-                }
-              }
-            },
-            "data_quality_job_output_config": {
-              "kms_key_id": {
-                "type": "string"
-              }
-            },
-            "job_resources": {
-              "cluster_config": {
-                "volume_kms_key_id": {
-                  "type": "string"
-                }
-              }
-            },
-            "role_arn": {
-              "type": "string"
-            },
-            "data_quality_baseline_config": {
-              "constraints_resource": {
-                "s3_uri": {
-                  "type": "string"
-                }
-              },
-              "statistics_resource": {
-                "s3_uri": {
-                  "type": "string"
-                }
-              }
-            },
-            "network_config": {
-              "vpc_config": {
-                "security_group_ids": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                },
-                "subnets": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          },
-          "model_quality_job_definition": {
-            "model_quality_job_input": {
-              "ground_truth_s3_input": {
-                "s3_uri": {
-                  "type": "string"
-                }
-              },
-              "endpoint_input": {
-                "s3_input_mode": {
-                  "type": "string"
-                },
-                "s3_data_distribution_type": {
-                  "type": "string"
-                }
-              },
-              "batch_transform_input": {
-                "data_captured_destination_s3_uri": {
-                  "type": "string"
-                },
-                "s3_input_mode": {
-                  "type": "string"
-                },
-                "s3_data_distribution_type": {
-                  "type": "string"
-                }
-              }
-            },
-            "model_quality_job_output_config": {
-              "kms_key_id": {
-                "type": "string"
-              }
-            },
-            "job_resources": {
-              "cluster_config": {
-                "volume_kms_key_id": {
-                  "type": "string"
-                }
-              }
-            },
-            "role_arn": {
-              "type": "string"
-            },
-            "model_quality_baseline_config": {
-              "constraints_resource": {
-                "s3_uri": {
-                  "type": "string"
-                }
-              }
-            },
-            "network_config": {
-              "vpc_config": {
-                "security_group_ids": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                },
-                "subnets": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          },
-          "model_bias_job_definition": {
-            "model_bias_job_input": {
-              "ground_truth_s3_input": {
-                "s3_uri": {
-                  "type": "string"
-                }
-              },
-              "endpoint_input": {
-                "s3_input_mode": {
-                  "type": "string"
-                },
-                "s3_data_distribution_type": {
-                  "type": "string"
-                }
-              },
-              "batch_transform_input": {
-                "data_captured_destination_s3_uri": {
-                  "type": "string"
-                },
-                "s3_input_mode": {
-                  "type": "string"
-                },
-                "s3_data_distribution_type": {
-                  "type": "string"
-                }
-              }
-            },
-            "model_bias_job_output_config": {
-              "kms_key_id": {
-                "type": "string"
-              }
-            },
-            "job_resources": {
-              "cluster_config": {
-                "volume_kms_key_id": {
-                  "type": "string"
-                }
-              }
-            },
-            "role_arn": {
-              "type": "string"
-            },
-            "model_bias_baseline_config": {
-              "constraints_resource": {
-                "s3_uri": {
-                  "type": "string"
-                }
-              }
-            },
-            "network_config": {
-              "vpc_config": {
-                "security_group_ids": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                },
-                "subnets": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          },
-          "model_explainability_job_definition": {
-            "model_explainability_job_input": {
-              "endpoint_input": {
-                "s3_input_mode": {
-                  "type": "string"
-                },
-                "s3_data_distribution_type": {
-                  "type": "string"
-                }
-              },
-              "batch_transform_input": {
-                "data_captured_destination_s3_uri": {
-                  "type": "string"
-                },
-                "s3_input_mode": {
-                  "type": "string"
-                },
-                "s3_data_distribution_type": {
-                  "type": "string"
-                }
-              }
-            },
-            "model_explainability_job_output_config": {
-              "kms_key_id": {
-                "type": "string"
-              }
-            },
-            "job_resources": {
-              "cluster_config": {
-                "volume_kms_key_id": {
-                  "type": "string"
-                }
-              }
-            },
-            "role_arn": {
-              "type": "string"
-            },
-            "model_explainability_baseline_config": {
-              "constraints_resource": {
-                "s3_uri": {
-                  "type": "string"
-                }
-              }
-            },
-            "network_config": {
-              "vpc_config": {
-                "security_group_ids": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                },
-                "subnets": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
                   }
                 }
               }
@@ -30387,11 +30048,6 @@ class TrainingJob(Base):
               "type": "string"
             }
           },
-          "training_job_output": {
-            "s3_training_job_output": {
-              "type": "string"
-            }
-          },
           "role_arn": {
             "type": "string"
           },
@@ -30401,9 +30057,6 @@ class TrainingJob(Base):
             },
             "kms_key_id": {
               "type": "string"
-            },
-            "remove_job_name_from_s3_output_path": {
-              "type": "boolean"
             }
           },
           "resource_config": {
@@ -30440,61 +30093,9 @@ class TrainingJob(Base):
               "type": "string"
             }
           },
-          "upstream_platform_config": {
-            "credential_proxy_config": {
-              "customer_credential_provider_kms_key_id": {
-                "type": "string"
-              },
-              "platform_credential_provider_kms_key_id": {
-                "type": "string"
-              }
-            },
-            "vpc_config": {
-              "security_group_ids": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              },
-              "subnets": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              }
-            },
-            "output_data_config": {
-              "kms_key_id": {
-                "type": "string"
-              }
-            },
-            "checkpoint_config": {
-              "s3_uri": {
-                "type": "string"
-              }
-            },
-            "enable_s3_context_keys_on_input_data": {
-              "type": "boolean"
-            },
-            "execution_role": {
-              "type": "string"
-            }
-          },
           "profiler_config": {
             "s3_output_path": {
               "type": "string"
-            }
-          },
-          "processing_job_config": {
-            "processing_output_config": {
-              "kms_key_id": {
-                "type": "string"
-              }
-            },
-            "upstream_processing_output_config": {
-              "kms_key_id": {
-                "type": "string"
-              }
             }
           }
         }
@@ -32904,14 +32505,6 @@ class UserProfile(Base):
             "execution_role": {
               "type": "string"
             },
-            "environment_settings": {
-              "default_s3_artifact_path": {
-                "type": "string"
-              },
-              "default_s3_kms_key_id": {
-                "type": "string"
-              }
-            },
             "security_groups": {
               "type": "array",
               "items": {
@@ -32969,20 +32562,6 @@ class UserProfile(Base):
                   "items": {
                     "type": "string"
                   }
-                }
-              }
-            },
-            "emr_settings": {
-              "assumable_role_arns": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              },
-              "execution_role_arns": {
-                "type": "array",
-                "items": {
-                  "type": "string"
                 }
               }
             }
