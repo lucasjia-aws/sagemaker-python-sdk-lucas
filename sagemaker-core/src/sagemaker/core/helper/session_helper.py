@@ -51,6 +51,7 @@ from sagemaker.core.common_utils import (
     TagsDict,
     instance_supports_kms,
     create_paginator_config,
+    validate_path_within_directory,
 )
 
 from sagemaker.core.config.config_utils import _log_sagemaker_config_merge
@@ -543,13 +544,20 @@ class Session(object):  # pylint: disable=too-many-public-methods
         # For each object key, create the directory on the local machine if needed, and then
         # download the file.
         downloaded_paths = []
+        path_real = os.path.realpath(path)
         for dir_path in directories:
+            validate_path_within_directory(dir_path, path)
             os.makedirs(os.path.dirname(dir_path), exist_ok=True)
         for key in keys:
             tail_s3_uri_path = os.path.basename(key)
             if not os.path.splitext(key_prefix)[1]:
                 tail_s3_uri_path = os.path.relpath(key, key_prefix)
             destination_path = os.path.join(path, tail_s3_uri_path)
+
+            validate_path_within_directory(
+                destination_path, path, source_description=key
+            )
+
             if not os.path.exists(os.path.dirname(destination_path)):
                 os.makedirs(os.path.dirname(destination_path), exist_ok=True)
             s3.download_file(
