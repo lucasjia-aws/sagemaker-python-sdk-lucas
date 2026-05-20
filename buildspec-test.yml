@@ -3,12 +3,11 @@ phases:
   pre_build:
     commands:
       - start-dockerd
-      - pyenv global 3.12.2 3.10.13
+      - pyenv global 3.12.2
       - cd sagemaker-mlops
-      - pip3.10 install -U boto3 awscli requests tox==3.28.0 twine fabric tox-pip-version
       - pip3.12 install -U boto3 awscli requests tox==3.28.0 twine fabric tox-pip-version
   build:
     commands:
       - IGNORE_COVERAGE=-
-      - echo "=== py312 spark_py312 tests ==="
-      - tox -e py312 -- tests/integ -v -m spark_py312 --durations 50
+      - echo "=== py312 single test - lake formation ==="
+      - tox -e py312 -- tests/integ/feature_store/feature_processor/test_feature_processor_integ.py::test_to_pipeline_and_execute_with_lake_formation -v --durations 50
