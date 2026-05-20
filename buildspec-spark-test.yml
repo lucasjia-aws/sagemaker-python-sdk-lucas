@@ -1,0 +1,27 @@
+version: 0.2
+phases:
+  pre_build:
+    commands:
+      - start-dockerd
+      - pyenv global 3.12.2 3.10.13
+      - cd sagemaker-core
+      - pip3.10 install -e .
+      - pip3.12 install -e .
+      - cd ../sagemaker-train
+      - pip3.10 install -e .
+      - pip3.12 install -e .
+      - cd ../sagemaker-serve
+      - pip3.10 install -e .
+      - pip3.12 install -e .
+      - cd ../sagemaker-mlops
+      - pip3.10 install -U tox==3.28.0 tox-pip-version
+      - pip3.10 install -e .[test]
+      - pip3.12 install -U tox==3.28.0 tox-pip-version
+      - pip3.12 install -e .[test]
+  build:
+    commands:
+      - IGNORE_COVERAGE=-
+      - echo "=== Step 1 py310 collect-only excluding spark_py312 ==="
+      - tox -e py310 -- tests/integ -m "not spark_py312" --collect-only 2>&1 | tail -30
+      - echo "=== Step 2 py312 spark_py312 only ==="
+      - tox -e py312 -- tests/integ -v -m spark_py312 --durations 50
